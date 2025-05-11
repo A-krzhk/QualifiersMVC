@@ -1,0 +1,144 @@
+@model DanceualifiersMVC.ViewModels.DirectionViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container py-5">
+    <!-- Заголовок и описание -->
+    <div class="mb-4">
+        <h1 class="display-4">@Model.Name</h1>
+        <p class="lead">@Model.Description</p>
+    </div>
+
+    <!-- Сообщение об ошибке -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Кнопки навигации -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Назад к списку
+        </a>
+        @if (User.IsInRole(DanceualifiersMVC.Models.Constants.RoleConstants.Staff))
+        {
+            <a asp-action="AddTimeSlot" asp-route-directionId="@Model.Id" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Добавить временной интервал
+            </a>
+        }
+    </div>
+
+    <!-- Таблица временных интервалов -->
+    <h3 class="mb-3">Доступные временные интервалы</h3>
+
+    @if (!Model.TimeSlots.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>Для этого направления пока нет доступных временных интервалов.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Начало</th>
+                    <th>Окончание</th>
+                    <th>Доступно мест</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var timeSlot in Model.TimeSlots)
+                {
+                    var filledPercentage = timeSlot.MaxParticipants > 0
+                        ? (timeSlot.MaxParticipants - timeSlot.AvailableSeats) * 100 / timeSlot.MaxParticipants
+                        : 0;
+
+                    <tr>
+                        <td>@timeSlot.StartTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@timeSlot.EndTime.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                    <div class="progress-bar @(filledPercentage >= 80 ? "bg-danger" : filledPercentage >= 50 ? "bg-warning" : "bg-success")"
+                                         style="width: @filledPercentage%"></div>
+                                </div>
+                                <span class="badge @(timeSlot.AvailableSeats == 0 ? "bg-danger" : "bg-success")">
+                                        @timeSlot.AvailableSeats из @timeSlot.MaxParticipants
+                                    </span>
+                            </div>
+                        </td>
+                        <td>
+                            @if (User.Identity.IsAuthenticated && !User.IsInRole(DanceualifiersMVC.Models.Constants.RoleConstants.Staff))
+                            {
+                                <form asp-controller="Registrations" asp-action="Register" method="post" class="d-inline">
+                                    <input type="hidden" name="timeSlotId" value="@timeSlot.Id" />
+                                    <input type="hidden" name="directionId" value="@Model.Id" />
+                                    <button type="submit"
+                                            class="btn @(timeSlot.AvailableSeats == 0 ? "btn-outline-secondary" : "btn-success") btn-sm"
+                                            @(timeSlot.AvailableSeats == 0 ? "disabled" : "")>
+                                        @if (timeSlot.AvailableSeats == 0)
+                                        {
+                                            <span><i class="fas fa-ban me-1"></i>Нет мест</span>
+                                        }
+                                        else
+                                        {
+                                            <span><i class="fas fa-check-circle me-1"></i>Записаться</span>
+                                        }
+                                    </button>
+                                </form>
+                            }
+
+                            @if (User.IsInRole(DanceualifiersMVC.Models.Constants.RoleConstants.Staff))
+                            {
+                                <div class="btn-group">
+                                    <a asp-controller="Registrations" asp-action="Participants"
+                                       asp-route-timeSlotId="@timeSlot.Id"
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-users me-1"></i>Участники
+                                    </a>
+                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#deleteTimeSlotModal-@timeSlot.Id">
+                                        <i class="fas fa-trash-alt me-1"></i>Удалить
+                                    </button>
+                                </div>
+
+                                <!-- Модальное окно подтверждения удаления -->
+                                <div class="modal fade" id="deleteTimeSlotModal-@timeSlot.Id" tabindex="-1"
+                                     aria-labelledby="deleteModalLabel-@timeSlot.Id" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel-@timeSlot.Id">Подтверждение удаления</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Вы уверены, что хотите удалить временной интервал <strong>@timeSlot.StartTime.ToString("dd.MM.yyyy HH:mm")</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form asp-action="DeleteTimeSlot" asp-controller="Directions" method="post">
+                                                    <input type="hidden" name="timeSlotId" value="@timeSlot.Id" />
+                                                    <input type="hidden" name="directionId" value="@Model.Id" />
+                                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

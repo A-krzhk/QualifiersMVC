@@ -1,0 +1,9 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <ellipse stroke-width="14" stroke="#ffffff" ry="234.50001" rx="234.50001" id="svg_1" cy="301.50001" cx="404.00001" fill="none"/>
+  <text transform="matrix(1.52858 0 0 0.912892 -242.856 11.6238)" stroke="#ffffff" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Noto Sans Mono'" font-size="100" id="svg_3" y="278.90078" x="336.92122" stroke-width="3" fill="#ffffff">HSE</text>
+  <text transform="matrix(1.52858 0 0 0.912892 -238.856 6.62383)" stroke="#ffffff" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="'Noto Sans Mono'" font-size="100" id="svg_2" y="409.25567" x="299.63164" stroke-width="3" fill="#ffffff">CREW</text>
+ </g>
+</svg>

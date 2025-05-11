@@ -1,0 +1,47 @@
+@model DanceualifiersMVC.ViewModels.DirectionViewModel
+
+@{
+    ViewData["Title"] = "Редактировать направление";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <h1 class="mb-4"><i class="fas fa-edit me-2"></i>Редактировать направление</h1>
+            <hr />
+
+            <form asp-action="Edit" method="post" novalidate>
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <!-- Название направления -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold">Название</label>
+                    <input asp-for="Name" class="form-control" placeholder="Введите название направления" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Описание направления -->
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-semibold">Описание</label>
+                    <textarea asp-for="Description" class="form-control" rows="5" placeholder="Краткое описание направления..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Назад к списку
+                    </a>
+                    <button type="submit" class="btn btn-sm btn-outline-primary min-width-btn">
+                        <i class="fas fa-save me-1"></i>Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

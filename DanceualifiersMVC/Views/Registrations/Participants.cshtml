@@ -1,0 +1,60 @@
+@model List<DanceualifiersMVC.ViewModels.ParticipantViewModel>
+
+@{
+    ViewData["Title"] = "Участники временного слота";
+    var directionName = ViewBag.DirectionName as string ?? "Не указано";
+    var startTime = ViewBag.StartTime as DateTime? ?? DateTime.MinValue;
+    var endTime = ViewBag.EndTime as DateTime? ?? DateTime.MinValue;
+    var directionId = ViewBag.DirectionId as int? ?? 0;
+}
+
+<div class="container py-5">
+    <!-- Заголовок -->
+    <div class="mb-4">
+        <h1 class="display-4">Участники временного слота</h1>
+        <p class="lead">Направление: @directionName</p>
+        <p class="lead">Время: @startTime.ToString("dd.MM.yyyy HH:mm") - @endTime.ToString("HH:mm")</p>
+        <p class="lead">Количество участников: @Model.Count</p>
+    </div>
+
+    <!-- Таблица участников -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>На этот временной слот пока никто не записался.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>ФИО</th>
+                    <th>Email</th>
+                    <th>Telegram</th>
+                    <th>Номер места</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var participant in Model)
+                {
+                    <tr>
+                        <td>@participant.FullName</td>
+                        <td>@participant.Email</td>
+                        <td>@(string.IsNullOrEmpty(participant.TelegramUsername) ? "-" : participant.TelegramUsername)</td>
+                        <td>@participant.SeatNumber</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <!-- Кнопка навигации -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a asp-action="Details" asp-controller="Directions" asp-route-id="@directionId" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Назад к направлению
+        </a>
+    </div>
+</div>

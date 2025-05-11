@@ -1,0 +1,274 @@
+﻿<!DOCTYPE html>
+<html lang="ru" style="height: 100%;">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HSE Crew Qualifiers</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Минимальная высота окна */
+            margin: 0; /* Убираем стандартные отступы */
+        }
+
+        main {
+            flex: 1 0 auto; /* Растягивает main до заполнения пространства */
+            padding-bottom: 20px; /* Отступ перед футером */
+        }
+
+        .footer {
+            flex-shrink: 0; /* Футер не сжимается */
+            background-color: #212529;
+            color: white;
+            padding: 30px 0;
+            /* Убрано margin-top: 50px */
+        }
+
+        .navbar {
+            background-color: #fff !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: #c9151b;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .navbar .nav-link {
+            font-weight: 500;
+            color: #212529;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .navbar .nav-link:hover {
+            color: #c9151b;
+        }
+
+        .btn-primary {
+            background-color: #c9151b;
+            border-color: #c9151b;
+        }
+
+        .btn-primary:hover {
+            background-color: #a01014;
+            border-color: #a01014;
+        }
+
+        .btn-outline-primary {
+            color: #c9151b;
+            border-color: #c9151b;
+        }
+
+        .btn-outline-primary:hover {
+            color: white !important;
+            background-color: #c9151b;
+            border-color: #c9151b;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #c9151b;
+        }
+
+        .footer-logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+        }
+
+        .page-header {
+            background-color: #c9151b;
+            color: white;
+            padding: 50px 0;
+            margin-bottom: 40px;
+        }
+
+        .auth-btn {
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+
+        .nav-btn-logout {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #212529; /* Исправлено с var(#212529) */
+            font-weight: 500;
+        }
+
+        .nav-btn-logout:hover {
+            color: #c9151b;
+        }
+
+        .btn-rounded {
+            border-radius: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Directions" asp-action="Index">
+                <img src="/images/hse-crew-logo.jpg" alt="HSE Crew Logo" onerror="this.src='/images/hse-crew-logo-fallback.png'; this.onerror=null;">
+                <span>HSE Crew</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Directions" asp-action="Index">
+                            <i class="fas fa-compass me-1"></i> Направления
+                        </a>
+                    </li>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        @* Только для участников *@
+                        if (User.IsInRole("Participant"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Registrations" asp-action="MyRegistrations">
+                                    <i class="fas fa-clipboard-list me-1"></i> Мои регистрации
+                                </a>
+                            </li>
+                        }
+
+                        @* Только для сотрудников *@
+                        @if (User.IsInRole("Staff"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                    <i class="fas fa-user-shield me-1"></i> Админ-панель
+                                </a>
+                            </li>
+                        }
+
+                        <li class="nav-item ms-2">
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="nav-btn-logout">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Выход
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-primary auth-btn me-2" asp-controller="Account" asp-action="Login">
+                                <i class="fas fa-sign-in-alt me-1"></i> Вход
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary auth-btn text-white" asp-controller="Account" asp-action="Register">
+                                <i class="fas fa-user-plus me-1"></i> Регистрация
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main role="main">
+    @RenderBody()
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <p>HSE Crew - открытый танцевальный клуб для студентов пермской Вышки;</p>
+                <div class="social-icons">
+                    <a href="https://vk.com/hsecrew" target="_blank"><i class="fab fa-vk"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-4" style="background-color: rgba(255,255,255,0.2);">
+        <div class="text-center">
+            <p class="mb-0">© @DateTime.Now.Year - HSE Crew Dance Studio - Все права защищены</p>
+        </div>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<script>
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+    
+    const animateOnScroll = () => {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        elements.forEach(element => {
+            const position = element.getBoundingClientRect();
+            if(position.top < window.innerHeight) {
+                element.classList.add('fade-in');
+            }
+        });
+    };
+
+    window.addEventListener('scroll', animateOnScroll);
+    window.addEventListener('load', animateOnScroll);
+</script>
+
+@RenderSection("Scripts", required: false)
+</body>
+</html>

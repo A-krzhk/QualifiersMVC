@@ -1,0 +1,97 @@
+@{
+    ViewData["Title"] = "Админ-панель";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4"><i class="fas fa-tools me-2"></i>Админ-панель</h1>
+    <hr />
+
+    <!-- Карточки с действиями -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-user-shield me-2"></i>Создать пользователя Staff</h5>
+                    <p class="card-text">Добавьте нового администратора или сотрудника с ограниченным доступом.</p>
+                    <a asp-action="CreateAdmin" class="btn btn-primary">Создать</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-search me-2"></i>Найти участника</h5>
+                    <p class="card-text">Поиск зарегистрированных участников по имени, почте или номеру заявки.</p>
+                    <a asp-controller="Registrations" asp-action="FindParticipant" class="btn btn-primary">Поиск</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика (заглушки или данные из ViewBag) -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-danger bg-transparent">
+                <div class="card-body text-dark">
+                    <h5 class="card-title">Направлений</h5>
+                    <p class="card-text fs-4">@ViewBag.DirectionCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-danger bg-transparent">
+                <div class="card-body text-dark">
+                    <h5 class="card-title">Пользователей</h5>
+                    <p class="card-text fs-4">@ViewBag.ParticipantCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-danger bg-transparent">
+                <div class="card-body text-dark">
+                    <h5 class="card-title">Таймслотов</h5>
+                    <p class="card-text fs-4">@ViewBag.TimeSlotCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border border-danger bg-transparent">
+                <div class="card-body text-dark">
+                    <h5 class="card-title">Регистраций</h5>
+                    <p class="card-text fs-4">@ViewBag.RegistrationCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mt-5">
+        <h4>Последние регистрации</h4>
+        @{
+            var registrations = ViewBag.LatestRegistrations as List<Registration>;
+        }
+        <ul class="list-group">
+            @if (registrations != null && registrations.Any())
+            {
+                foreach (var reg in registrations)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @reg.User.FirstName @reg.User.LastName
+                        <span class="badge bg-secondary rounded-pill">@reg.TimeSlot.Direction.Name</span>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="list-group-item text-muted text-center">
+                    <em>Нет недавних регистраций</em>
+                </li>
+            }
+        </ul>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a2d9d5c89b.js" crossorigin="anonymous"></script>
+}

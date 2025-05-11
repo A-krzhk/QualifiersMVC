@@ -1,0 +1,57 @@
+@model DanceualifiersMVC.ViewModels.TimeSlotViewModel
+
+@{
+    ViewData["Title"] = "Добавить временной слот";
+    var direction = ViewBag.Direction as DanceualifiersMVC.ViewModels.DirectionViewModel;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <h1 class="mb-4">
+                <i class="fas fa-clock me-2"></i>Добавить временной слот для направления «@direction?.Name»
+            </h1>
+            <hr />
+
+            <form asp-action="AddTimeSlot" method="post" novalidate>
+                <input type="hidden" asp-for="DirectionId" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <!-- Начало -->
+                <div class="mb-3">
+                    <label asp-for="StartTime" class="form-label fw-semibold">Время начала</label>
+                    <input asp-for="StartTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+
+                <!-- Конец -->
+                <div class="mb-3">
+                    <label asp-for="EndTime" class="form-label fw-semibold">Время окончания</label>
+                    <input asp-for="EndTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+
+                <!-- Макс. участников -->
+                <div class="mb-3">
+                    <label asp-for="MaxParticipants" class="form-label fw-semibold">Максимальное количество участников</label>
+                    <input asp-for="MaxParticipants" class="form-control" type="number" min="1" placeholder="Например, 20" />
+                    <span asp-validation-for="MaxParticipants" class="text-danger"></span>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Details" asp-route-id="@direction?.Id" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Назад к направлению
+                    </a>
+                    <button type="submit" class="btn btn-sm btn-outline-primary min-width-btn">
+                        <i class="fas fa-plus me-1"></i>Добавить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

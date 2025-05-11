@@ -1,0 +1,84 @@
+    @model IEnumerable<DanceualifiersMVC.ViewModels.RegistrationViewModel>
+
+    @{
+        ViewData["Title"] = "Мои регистрации";
+    }
+
+    <div class="container">
+        <h1>@ViewData["Title"]</h1>
+        
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info">
+                У вас пока нет регистраций. <a asp-controller="Directions" asp-action="Index">Просмотреть доступные направления</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Направление</th>
+                            <th>Начало</th>
+                            <th>Окончание</th>
+                            <th>Номер места</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var registration in Model)
+                        {
+                            <tr>
+                                <td>@registration.DirectionName</td>
+                                <td>@registration.StartTime.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>@registration.EndTime.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>@registration.SeatNumber</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal-@registration.Id">
+                                        Отменить
+                                    </button>
+                                    
+                                    <!-- Cancel Modal -->
+                                    <div class="modal fade" id="cancelModal-@registration.Id" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Подтверждение отмены</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Вы уверены, что хотите отменить регистрацию на направление "@registration.DirectionName"?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                                    <form asp-action="Cancel" method="post">
+                                                        <input type="hidden" name="id" value="@registration.Id" />
+                                                        <button type="submit" class="btn btn-danger">Отменить регистрацию</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
