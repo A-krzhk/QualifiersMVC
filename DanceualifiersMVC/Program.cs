@@ -2,14 +2,12 @@ using DanceualifiersMVC.Data;
 using DanceualifiersMVC.Models;
 using DanceualifiersMVC.Models.Constants;
 using DanceualifiersMVC.Services;
-using DanceualifiersMVC.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -26,10 +24,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Configure JWT settings
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-
-// Add application services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DirectionService>();
 builder.Services.AddScoped<RegistrationService>();
@@ -38,8 +32,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -62,8 +54,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Directions}/{action=Index}/{id?}");
 
-
-// Seed roles
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();

@@ -1,10 +1,7 @@
 using DanceualifiersMVC.Models;
 using DanceualifiersMVC.Models.Constants;
-using DanceualifiersMVC.Settings;
 using DanceualifiersMVC.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic;
 
 namespace DanceualifiersMVC.Services;
 
@@ -12,16 +9,13 @@ public class AuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly JwtSettings _jwtSettings;
 
     public AuthService(
         UserManager<ApplicationUser> userManager, 
-        SignInManager<ApplicationUser> signInManager,
-        IOptions<JwtSettings> jwtSettings)
+        SignInManager<ApplicationUser> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _jwtSettings = jwtSettings.Value;
     }
 
     public async Task<(bool Success, string Message)> RegisterAsync(RegisterViewModel model)
