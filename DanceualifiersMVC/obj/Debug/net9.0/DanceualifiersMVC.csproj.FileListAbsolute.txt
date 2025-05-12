@@ -236,3 +236,4 @@ C:\Users\alena\RiderProjects\DanceualifiersMVC\DanceualifiersMVC\bin\Debug\net9.
 C:\Users\alena\RiderProjects\DanceualifiersMVC\DanceualifiersMVC\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\alena\RiderProjects\DanceualifiersMVC\DanceualifiersMVC\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\alena\RiderProjects\DanceualifiersMVC\DanceualifiersMVC\obj\Debug\net9.0\compressed\0ddakdpxtz-hdz6nxuf16.gz
+C:\Users\alena\RiderProjects\DanceualifiersMVC\DanceualifiersMVC\obj\Debug\net9.0\DanceualifiersMVC.sourcelink.json
