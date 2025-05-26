@@ -20,6 +20,8 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\StaffNotifications\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\StaffNotifications\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

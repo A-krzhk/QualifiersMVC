@@ -1,0 +1,63 @@
+@model DanceualifiersMVC.ViewModels.CreateNotificationViewModel
+
+@{
+    ViewData["Title"] = "Создать уведомление";
+}
+<!-- Добавляем ValidationSummary для отображения всех ошибок -->
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Создать уведомление</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateNotification" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Title" class="form-label">Заголовок</label>
+                            <input asp-for="Title" class="form-control" placeholder="Введите заголовок уведомления" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Message" class="form-label">Сообщение</label>
+                            <textarea asp-for="Message" class="form-control" rows="5" placeholder="Введите текст уведомления"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="TargetUserId" class="form-label">Получатель</label>
+                            <select asp-for="TargetUserId" class="form-select">
+                                <option value="">Все участники</option>
+                                @if (ViewBag.Users != null)
+                                {
+                                    @foreach (var user in ViewBag.Users as List<DanceualifiersMVC.Models.ApplicationUser>)
+                                    {
+                                        <option value="@user.Id">@user.UserName (@user.Email)</option>
+                                    }
+                                }
+                            </select>
+                            <div class="form-text">Выберите конкретного участника или оставьте пустым для отправки всем</div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                Отправить уведомление
+                            </button>
+                            <a asp-action="Notifications" class="btn btn-secondary">
+                                Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

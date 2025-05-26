@@ -1,0 +1,89 @@
+@model IEnumerable<DanceualifiersMVC.Models.Notification>
+
+@{
+    ViewData["Title"] = "Уведомления";
+}
+
+<!-- Добавляем токен антиподделки -->
+@Html.AntiForgeryToken()
+
+<div class="container">
+    <h2>Мои уведомления</h2>
+
+    <div class="chat-container" style="max-height: 600px; overflow-y: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px; background-color: #f8f9fa;">
+        @if (Model.Any())
+        {
+            @foreach (var notification in Model)
+            {
+                <div class="notification-message @(notification.IsRead ? "read" : "unread")"
+                     data-id="@notification.Id"
+                     style="margin-bottom: 15px; padding: 15px; border-radius: 8px; background-color: @(notification.IsRead ? "#ffffff" : "#e3f2fd"); border-left: 4px solid @(notification.IsRead ? "#6c757d" : "#007bff");">
+
+                    <div class="message-header d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-primary">@notification.Title</strong>
+                        <small class="text-muted">@notification.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                    </div>
+
+                    <div class="message-body mb-2">
+                        <p class="mb-1">@notification.Message</p>
+                        <small class="text-muted">От: @notification.Admin.UserName</small>
+                    </div>
+
+                    <div class="message-footer">
+                        @if (!notification.IsRead)
+                        {
+                            <button class="btn btn-sm btn-outline-primary mark-read-btn" data-id="@notification.Id">
+                                Отметить как прочитанное
+                            </button>
+                        }
+                        else
+                        {
+                            <small class="text-success">✓ Прочитано @notification.ReadAt?.ToString("dd.MM.yyyy HH:mm")</small>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-bell-slash fa-3x mb-3"></i>
+                <p>У вас пока нет уведомлений</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const markReadButtons = document.querySelectorAll('.mark-read-btn');
+
+            markReadButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const notificationId = this.getAttribute('data-id');
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                    // Создаем FormData для отправки
+                    const formData = new FormData();
+                    formData.append('id', notificationId);
+                    formData.append('__RequestVerificationToken', token);
+
+                    fetch('/Notifications/MarkAsRead', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
+        });
+    </script>
+}

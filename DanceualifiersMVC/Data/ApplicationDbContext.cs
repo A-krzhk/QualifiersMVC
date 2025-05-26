@@ -14,12 +14,12 @@ public class   ApplicationDbContext  : IdentityDbContext<ApplicationUser>
     public DbSet<Direction> Directions { get; set; }
     public DbSet<TimeSlot> TimeSlots { get; set; }
     public DbSet<Registration> Registrations { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
         
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-            
-        // Configure relationships
+        
         builder.Entity<Direction>()
             .HasOne(d => d.CreatedBy)
             .WithMany()
@@ -42,6 +42,18 @@ public class   ApplicationDbContext  : IdentityDbContext<ApplicationUser>
             .HasOne(r => r.TimeSlot)
             .WithMany(ts => ts.Registrations)
             .HasForeignKey(r => r.TimeSlotId)
+            .OnDelete(DeleteBehavior.Cascade);
+        // Конфигурация для уведомлений
+        builder.Entity<Notification>()
+            .HasOne(n => n.Admin)
+            .WithMany()
+            .HasForeignKey(n => n.AdminId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.Entity<Notification>()
+            .HasOne(n => n.TargetUser)
+            .WithMany()
+            .HasForeignKey(n => n.TargetUserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

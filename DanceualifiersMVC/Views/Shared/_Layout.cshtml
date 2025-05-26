@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using DanceualifiersMVC.Models.Constants
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html lang="ru" style="height: 100%;">
 <head>
     <meta charset="utf-8" />
@@ -170,6 +172,26 @@
 
                     @if (User.Identity?.IsAuthenticated == true)
                     {
+                        <!-- Для участников -->
+                        @if (User.IsInRole(RoleConstants.Participant))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Notifications" asp-action="Index">
+                                    <i class="fas fa-bell"></i> Уведомления
+                                    <span id="notification-count" class="badge bg-danger" style="display: none;"></span>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Для сотрудников -->
+                        @if (User.IsInRole(RoleConstants.Staff))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Notifications">
+                                    <i class="fas fa-bell"></i> Уведомления
+                                </a>
+                            </li>
+                        }
                         @* Только для участников *@
                         if (User.IsInRole("Participant"))
                         {
@@ -272,3 +294,32 @@
 @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+@if (User.IsInRole(RoleConstants.Participant))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNotificationCount();
+            
+            // Обновляем счетчик каждые 30 секунд
+            setInterval(updateNotificationCount, 30000);
+        });
+
+        function updateNotificationCount() {
+            fetch('/Notifications/GetUnreadCount')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('notification-count');
+                    if (data.count > 0) {
+                        badge.textContent = data.count;
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching notification count:', error);
+                });
+        }
+    </script>
+}

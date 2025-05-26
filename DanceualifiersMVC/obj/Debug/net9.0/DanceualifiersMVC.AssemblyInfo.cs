@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DanceualifiersMVC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41aae247ef9bb66c8b3535bc06511df3ee6a625e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c6ae20dfd1fbf707c741bba39d7b8fe8a34d0db0")]
 [assembly: System.Reflection.AssemblyProductAttribute("DanceualifiersMVC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DanceualifiersMVC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
